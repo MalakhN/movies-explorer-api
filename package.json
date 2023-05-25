@@ -1,0 +1,29 @@
+{
+  "name": "movies-explorer-api",
+  "author": "Natasha Malakhova",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint ."
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "celebrate": "^15.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-winston": "^4.2.0",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.2.1",
+    "validator": "^13.9.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "nodemon": "^2.0.22"
+  }
+}
