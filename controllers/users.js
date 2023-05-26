@@ -17,10 +17,6 @@ const getUserInfo = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Пользователь с данным id не найден'));
-        return;
-      }
       next(err);
     });
 };

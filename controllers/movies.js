@@ -4,7 +4,7 @@ const { NotFoundError } = require('../errors/NotFoundError');
 const { ForbiddenError } = require('../errors/ForbiddenError');
 
 const getAllMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .populate(['owner'])
     .then((movies) => {
       res.send(movies);
@@ -43,11 +43,7 @@ const createMovie = (req, res, next) => {
     movieId,
     owner: _id
   })
-    .then((newMovie) => {
-      Movie.findOne(newMovie)
-        .populate(['owner'])
-        .then((movie) => res.status(201).send(movie));
-    })
+    .then((newMovie) => res.status(201).send(newMovie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные для добавления фильма'));
@@ -58,15 +54,14 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-  Movie.findById(movieId)
+  Movie.findById({ _id: req.params._id })
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError('Фильм не найден');
       } else if (movie.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Пользователь не может удалить фильм, который не добавлял');
       } else {
-        return Movie.deleteOne({ _id: movieId }).then(() => res.send(movie));
+        return Movie.deleteOne({ _id: req.params._id }).then(() => res.send(movie));
       }
     })
     .catch((err) => {
