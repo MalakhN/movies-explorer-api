@@ -6,12 +6,20 @@ const { BadRequestError } = require('../errors/BadRequestError');
 const { NotFoundError } = require('../errors/NotFoundError');
 const { ConflictError } = require('../errors/ConflictError');
 const { UnauthorizedError } = require('../errors/UnauthorizedError');
+const {
+  userNotFound,
+  userIdNotFound,
+  wrongUserUpdate,
+  wrongEmail,
+  wrongUserData,
+  wrongEmailPassword
+} = require('../errors/errorsTexts');
 
 const getUserInfo = (req, res, next) => {
   User.findById({ _id: req.user._id })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        throw new NotFoundError(userNotFound);
       } else {
         res.send(user);
       }
@@ -34,14 +42,18 @@ const updateUserInfo = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь с данным id не найден');
+        throw new NotFoundError(userIdNotFound);
       } else {
         res.send(user);
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Некорректные данные для обновлении профиля пользователя'));
+      if (err.code === 11000) {
+        next(
+          new ConflictError(wrongEmail),
+        );
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestError(wrongUserUpdate));
         return;
       }
       next(err);
@@ -66,14 +78,10 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.code === 11000) {
         next(
-          new ConflictError('Пользователь с данным email уже существует')
+          new ConflictError(wrongEmail)
         );
       } else if (err.name === 'ValidationError') {
-        next(
-          new BadRequestError(
-            'Некорректные данные для созданиия пользователя'
-          )
-        );
+        next(new BadRequestError(wrongUserData));
       } else {
         next(err);
       }
@@ -86,11 +94,11 @@ const login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Некорректные email или пароль');
+        throw new UnauthorizedError(wrongEmailPassword);
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          throw new UnauthorizedError('Некорректные email или пароль');
+          throw new UnauthorizedError(wrongEmailPassword);
         }
         const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key', {
           expiresIn: '7d',

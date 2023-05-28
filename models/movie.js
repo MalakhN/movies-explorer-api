@@ -53,14 +53,13 @@ const movieSchema = new mongoose.Schema({
   },
   movieId: {
     type: Number,
-    ref: 'movieId',
     required: true,
   },
   nameRU: {
     type: String,
     required: true,
   },
-  nameENG: {
+  nameEN: {
     type: String,
     required: true,
   },

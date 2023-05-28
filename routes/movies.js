@@ -15,17 +15,17 @@ moviesRouter.post('/', celebrate({
     year: Joi.string().required(),
     description: Joi.string().required(),
     image: Joi.string().required().regex(regEx),
-    trailer: Joi.string().required().regex(regEx),
-    nameRU: Joi.string().required(),
-    nameEN: Joi.string().required(),
+    trailerLink: Joi.string().required().regex(regEx),
     thumbnail: Joi.string().required().regex(regEx),
     movieId: Joi.number().required(),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
   }),
 }), createMovie);
 
-moviesRouter.delete('/:movieId', celebrate({
+moviesRouter.delete('/:_Id', celebrate({
   params: Joi.object().keys({
-    movieId: Joi.number().required(),
+    _Id: Joi.string().hex().length(24).required(),
   }),
 }), deleteMovie);
 
