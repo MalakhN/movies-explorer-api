@@ -10,6 +10,7 @@ const wrongId = 'Некорректный id';
 const movieIDNotFound = 'Фильм с таким id не найден';
 const deletionForbidden = 'Пользователь не может удалить фильм, который не добавлял';
 const urlNotFound = 'Страница не найдена';
+const authNeeded = 'Требуется авторизация';
 
 module.exports = {
   wrongUrl,
@@ -24,4 +25,5 @@ module.exports = {
   movieIDNotFound,
   deletionForbidden,
   urlNotFound,
+  authNeeded,
 };
